@@ -2,9 +2,9 @@ const Item = require('../models/item')
 
 module.exports = {
   addItem: (req, res) => {
-    const { imgUrl, title, price } = req.body
+    const { imgUrl, title, price, category } = req.body
 
-    Item.create({ imgUrl, title, price })
+    Item.create({ imgUrl, title, price, category })
       .then(resultItem => {
         res.status(200).json({
           message: "Add item success",
@@ -16,11 +16,12 @@ module.exports = {
           errorAddItem: err
         })
       })
-
   },
 
   getAllItem: (req, res) => {
-    Item.find({})
+    Item
+      .find({})
+      .sort({'submittedDate': 'desc'})
       .then(dataAllItem => {
         res.status(200).json({
           message: "Get all items success",
@@ -46,7 +47,7 @@ module.exports = {
           $set: {
             imgUrl: imgUrl,
             title: title,
-            price: price
+            price: price,
           }
         }
       )

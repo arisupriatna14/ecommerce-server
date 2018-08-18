@@ -12,7 +12,13 @@ const itemSchema = mongoose.Schema({
   price: {
     type: Number,
     require: true
+  },
+  category: {
+    type: String,
+    require: true
   }
+}, {
+  timestamps: true
 })
 
 module.exports = mongoose.model('Item', itemSchema)

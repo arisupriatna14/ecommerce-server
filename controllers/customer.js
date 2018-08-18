@@ -70,9 +70,11 @@ module.exports = {
     Customer.create({
       fullname: req.body.fullname,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      role: req.body.role
     })
       .then(resultSignup => {
+        console.log(resultSignup._id)
         let transporter = nodemailer.createTransport({
           service: "GMAIL",
           auth: {
@@ -81,8 +83,17 @@ module.exports = {
           }
         });
 
+        const token = jwt.sign(
+          {
+            id: resultSignup._id,
+            email: req.body.email,
+            role: req.body.role
+          },
+          process.env.JWT_SECRET_KEY
+        )
+
         let mailOptions = {
-          from: '"E-Commerce 📌" <no-replay@todofancy.com>',
+          from: '"E-Commerce" <no-replay@ristore.com>',
           to: `${req.body.email}`,
           subject: "Register ✔",
           text: "Hello world?",
@@ -106,11 +117,13 @@ module.exports = {
         });
         res.status(200).json({
           message: "Register Success",
+          token: token,
           resultSignup
         });
       })
       .catch(err => {
         res.status(401).json({
+          message: 'Email already exists!',
           error: err.message
         });
       });
@@ -159,7 +172,24 @@ module.exports = {
       });
   },
 
-  // listItemCustomer: (req, res) => {
-  //   const { name,  }
-  // }
+  listItemCustomer: (req, res) => {
+    const decoded = jwt.verify(req.headers.token, process.env.JWT_SECRET_KEY)
+    const userId = decoded.id
+    Customer
+      .findByIdAndUpdate({
+        _id: userId
+      }, {
+        $push: {listItemCustomer: req.body}
+      })
+      .then(() => {
+        res.status(200).json({
+          message: 'Success',
+        })
+      })
+      .catch(err => {
+        res.status(500).json({
+          err: err
+        })
+      })
+  }
 };

@@ -8,7 +8,12 @@ const customerSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    require: true
+    require: true,
+    unique: true
+  },
+  role: {
+    type: String,
+    default: 'Customer'
   },
   password: {
     type: String,
@@ -21,7 +26,7 @@ const customerSchema = mongoose.Schema({
       message:"Password must have one uppercase, lowercase, number, and a minimum length of 6 characters"
     }
   },
-  listItemCustomer: []
+  listItemCustomer: [],
 }, {
   timestamps: true
 })
