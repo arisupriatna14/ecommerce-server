@@ -35,8 +35,24 @@ module.exports = {
       })
   },
 
+  getItemByid: (req, res) => {
+    Item
+      .findOne({ _id: req.params.id })
+      .then(result => {
+        res.status(200).json({
+          message: "Get item by id success",
+          data: result
+        })
+      })
+      .catch(err => {
+        res.status(500).json({
+          errorGetItemById: err
+        })
+      })
+  },
+
   updateItem: (req, res) => {
-    const { imgUrl, title, price } = req.body
+    const { imgUrl, title, price, category } = req.body
     
     Item
       .updateOne(
@@ -48,6 +64,7 @@ module.exports = {
             imgUrl: imgUrl,
             title: title,
             price: price,
+            category: category
           }
         }
       )
