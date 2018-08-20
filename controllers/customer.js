@@ -173,13 +173,14 @@ module.exports = {
   },
 
   listItemCustomer: (req, res) => {
+    console.log(req.body)
     const decoded = jwt.verify(req.headers.token, process.env.JWT_SECRET_KEY)
     const userId = decoded.id
     Customer
       .findByIdAndUpdate({
         _id: userId
       }, {
-        $push: {listItemCustomer: req.body}
+        $push: {listItemCustomer: req.body.item}
       })
       .then(() => {
         res.status(200).json({
